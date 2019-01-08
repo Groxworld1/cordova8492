@@ -63,7 +63,23 @@ router.get('/auth/facebook/done', passport.authenticate('facebook', { failureRed
     return res.redirect('/home?userData=' + userData);
   });
 
-router
+  router.post('/doRegister', function(req, res){
+    let username = req.body.username;
+    let fbID = req.body.fbID;
+    let password = req.body.password;
+  
+    let query = "INSERT INTO users(fbID, username, password) VALUES(?, ?, ?)"
+    let params = [fbID, username, password];
+  
+    connection.query(query, params, function(err, results){
+      if(err){
+        res.json({msg: "Query Error"})
+        throw err;
+      }
+  
+      return res.redirect('/home');
+    })
+  })
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
